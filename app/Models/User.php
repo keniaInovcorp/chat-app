@@ -45,4 +45,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Check if the current user has the administrator role.
+     *
+     * @return bool Returns true when the "role" attribute is equal to "admin".
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the current user is a regular (non-admin) user.
+     *
+     * @return bool Returns true when the "role" attribute is equal to "user".
+     */
+    public function isRegularUser(): bool
+    {
+        return $this->role === 'user';
+    }
 }
