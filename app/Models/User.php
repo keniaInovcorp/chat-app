@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -64,5 +65,20 @@ class User extends Authenticatable
     public function isRegularUser(): bool
     {
         return $this->role === 'user';
+    }
+
+    /**
+     * Get all chat rooms that the user belongs to.
+     *
+     * The relationship uses the `chat_room_user` pivot table and exposes the
+     * `last_read_at` timestamp for each room membership.
+     *
+     * @return BelongsToMany
+     */
+    public function chatRooms()
+    {
+        return $this->belongsToMany(ChatRoom::class, 'chat_room_user')
+                    ->withPivot('last_read_at')
+                    ->withTimestamps();
     }
 }
