@@ -13,6 +13,7 @@ class Index extends Component
 {
     public ?ChatRoom $activeRoom = null;
     public string $newRoomName = '';
+    public string $userSearch = '';
 
     /**
      * Initialize the component, setting the first user chat room as active if any.
@@ -89,9 +90,15 @@ class Index extends Component
     {
         $user = $this->user();
 
+        $usersQuery = User::orderBy('name');
+        
+        if (!empty($this->userSearch)) {
+            $usersQuery->where('name', 'like', '%' . $this->userSearch . '%');
+        }
+
         return view('livewire.chat.index', [
-            'rooms' => $user->chatRooms()->orderBy('name')->get(),
-            'users' => User::orderBy('name')->get(),
+            'rooms' => $user->chatRooms()->with('users')->orderBy('name')->get(),
+            'users' => $usersQuery->limit(6)->get(),
         ]);
     }
 

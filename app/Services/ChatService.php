@@ -84,12 +84,18 @@ class ChatService
             return $room;
         }
 
-        return $this->createRoom(
-            name: $user1->name . ' & ' . $user2->name,
-            creator: $user1,
-            userIds: [$user1->id, $user2->id],
-            isPrivate: true,
-        );
+        // Create new DM room with both users
+        $room = ChatRoom::create([
+            'name'       => $user1->name . ' & ' . $user2->name,
+            'created_by' => $user1->id,
+            'is_private' => true,
+            'reference'  => 'dm-' . Str::random(10),
+        ]);
+
+        // Always add both users to DM rooms, regardless of role
+        $room->users()->sync([$user1->id, $user2->id]);
+
+        return $room;
     }
 }
 

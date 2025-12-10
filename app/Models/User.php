@@ -22,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status',
+        'avatar',
     ];
 
     /**
@@ -80,5 +83,25 @@ class User extends Authenticatable
         return $this->belongsToMany(ChatRoom::class, 'chat_room_user')
                     ->withPivot('last_read_at')
                     ->withTimestamps();
+    }
+
+    /**
+     * Get the user's avatar URL or null if not set.
+     *
+     * @return string|null
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
+    }
+
+    /**
+     * Get the first letter of the user's name in uppercase.
+     *
+     * @return string
+     */
+    public function getInitialsAttribute(): string
+    {
+        return strtoupper(mb_substr($this->name, 0, 1));
     }
 }

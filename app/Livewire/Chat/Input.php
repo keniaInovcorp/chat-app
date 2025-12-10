@@ -19,12 +19,16 @@ class Input extends Component
             'body' => 'required|string',
         ]);
 
-        $service->sendMessage(room: $this->room, sender: $this->user(), message: $this->body);
+        $messageText = $this->body;
 
-        $this->body = '';
+        $service->sendMessage(room: $this->room, sender: $this->user(), message: $messageText);
+
+        $this->reset('body');
 
         // Dispatch event to trigger automatic scroll in the Room component
         $this->dispatch('message-sent');
+
+        $this->dispatch('input-cleared');
     }
 
     public function render()

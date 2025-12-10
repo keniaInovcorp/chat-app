@@ -16,7 +16,7 @@ class Room extends Component
      * @var array<int, string>
      */
     protected $listeners = [
-        'messageCreated' => '$refresh',
+        'message-sent' => '$refresh',
     ];
 
      /**
@@ -35,6 +35,7 @@ class Room extends Component
 
         return view('livewire.chat.room', [
             'messages' => $messages,
+            'members' => $this->room->users,
         ]);
     }
 }

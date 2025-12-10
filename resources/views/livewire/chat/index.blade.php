@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                <ul class="space-y-1 mb-3">
+                <ul class="space-y-1 mb-3 max-h-64 overflow-y-auto">
                     @forelse($rooms as $room)
                         <li>
                             <button
@@ -64,39 +64,54 @@
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-black mb-2">
                     Pessoas
                 </h3>
-                <ul class="space-y-1">
+                
+                <!-- Search Input -->
+                <input
+                    type="text"
+                    wire:model.live="userSearch"
+                    placeholder="Pesquisar..."
+                    class="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg mb-3
+                           focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-black placeholder-gray-400"
+                >
+                
+                <!-- Users Grid (3x2) -->
+                <div class="grid grid-cols-3 gap-3">
                     @foreach($users as $user)
-                        <li class="flex items-center space-x-2 px-2 py-1 text-sm text-black font-medium
-                                   cursor-pointer hover:bg-gray-800 rounded"
+                        <div
                             wire:click="startDm({{ $user->id }})"
+                            class="flex flex-col items-center cursor-pointer group"
                         >
-                            <span class="w-2 h-2 rounded-full
-                                {{ $user->status === 'online' ? 'bg-green-500' : 'bg-gray-600' }}">
+                            <div class="relative">
+                                @if($user->avatar_url)
+                                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}"
+                                         class="w-14 h-14 rounded-full object-cover border-2 border-gray-300 group-hover:border-blue-500 transition">
+                                @else
+                                    <div class="w-14 h-14 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg border-2 border-gray-300 group-hover:border-blue-500 transition">
+                                        {{ $user->initials }}
+                                    </div>
+                                @endif
+                                
+                                <!-- Status indicator -->
+                                <span class="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-gray-100
+                                    {{ $user->status === 'online' ? 'bg-green-500' : 'bg-gray-400' }}">
+                                </span>
+                            </div>
+                            <span class="text-xs text-black font-medium mt-1 text-center truncate w-full">
+                                {{ $user->name }}
                             </span>
-                            <span>{{ $user->name }}</span>
-                        </li>
+                        </div>
                     @endforeach
-                </ul>
-            </div>
-        </div>
-
-        <!-- User Profile Footer -->
-        <div class="p-4 border-t border-gray-800">
-            <div class="text-sm font-semibold text-black">
-                {{ auth()->user()->name }}
-            </div>
-            <div class="text-xs text-black">
-                {{ ucfirst(auth()->user()->status) }}
+                </div>
             </div>
         </div>
     </aside>
 
     <!-- Chat Area -->
-    <main class="flex-1 flex flex-col bg-gray-900">
+    <main class="flex-1 flex flex-col bg-gray-100">
         @if($activeRoom)
             <livewire:chat.room :room="$activeRoom" wire:key="room-{{ $activeRoom->id }}" />
         @else
-            <div class="flex-1 flex items-center justify-center text-gray-500">
+            <div class="flex-1 flex items-center justify-center text-gray-700 font-medium">
                 Selecione uma sala ou pessoa para começar.
             </div>
         @endif

@@ -9,6 +9,18 @@
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
+
+                <!-- Admin navigation links -->
+                @if (Auth::user()->isAdmin())
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.rooms')" :active="request()->routeIs('admin.rooms')">
+                            {{ __('Rooms') }}
+                        </x-nav-link>
+                    </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->
@@ -67,6 +79,19 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                @if (Auth::user()->isAdmin())
+                    <div class="px-4 text-xs text-gray-400">
+                        {{ __('Admin') }}
+                    </div>
+                    <x-responsive-nav-link :href="route('admin.users')">
+                        {{ __('Users') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.rooms')">
+                        {{ __('Rooms') }}
+                    </x-responsive-nav-link>
+                    <div class="border-t border-gray-200"></div>
+                @endif
+
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
