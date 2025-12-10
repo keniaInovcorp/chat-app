@@ -29,7 +29,7 @@
                             {{ $message->created_at->format('H:i') }}
                         </span>
                     </div>
-                    <div class="text-gray-200 mt-1">
+                    <div class="mt-1 inline-block max-w-xl rounded-lg bg-white px-3 py-2 text-sm text-black">
                         {{ $message->body }}
                     </div>
                 </div>
@@ -39,6 +39,6 @@
 
     <!-- Input Area -->
     <div class="p-4 border-t border-gray-800 bg-gray-900">
-        {{-- <livewire:chat.input :room="$room" /> --}}
+        <livewire:chat.input :room="$room" />
     </div>
 </div>
