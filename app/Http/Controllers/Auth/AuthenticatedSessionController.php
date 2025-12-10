@@ -28,7 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // After logging in, always redirect to the main chat page.
+        return redirect()->intended(route('chat.index', absolute: false));
     }
 
     /**
