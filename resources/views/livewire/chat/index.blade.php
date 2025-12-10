@@ -1,11 +1,11 @@
 <div class="flex h-screen overflow-hidden">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-950 text-gray-300 flex flex-col">
+    <aside class="w-64 bg-gray-100 text-black flex flex-col">
         <div class="flex-1 overflow-y-auto p-4 space-y-6">
             <!-- Rooms -->
             <div>
                 <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-black">
                         Salas
                     </h3>
 
@@ -33,7 +33,7 @@
                             </button>
                         </li>
                     @empty
-                        <li class="text-xs text-gray-500">
+                        <li class="text-xs text-black">
                             Ainda não estás em nenhuma sala.
                         </li>
                     @endforelse
@@ -50,8 +50,9 @@
                     >
                     <button
                         type="submit"
-                        class="text-xs px-2 py-1 bg-indigo-600 text-white rounded
-                               hover:bg-indigo-700 disabled:opacity-50"
+                        class="text-xs px-2 py-1 bg-gray-200 text-black font-medium rounded border border-gray-400
+                               hover:bg-gray-300 focus:outline-none
+                               focus:ring-1 focus:ring-gray-500 focus:ring-offset-1 focus:ring-offset-gray-100"
                     >
                         Criar
                     </button>
@@ -60,12 +61,12 @@
 
             <!-- Users -->
             <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-black mb-2">
                     Pessoas
                 </h3>
                 <ul class="space-y-1">
                     @foreach($users as $user)
-                        <li class="flex items-center space-x-2 px-2 py-1 text-sm
+                        <li class="flex items-center space-x-2 px-2 py-1 text-sm text-black font-medium
                                    cursor-pointer hover:bg-gray-800 rounded"
                             wire:click="startDm({{ $user->id }})"
                         >
@@ -81,10 +82,10 @@
 
         <!-- User Profile Footer -->
         <div class="p-4 border-t border-gray-800">
-            <div class="text-sm font-medium text-white">
+            <div class="text-sm font-semibold text-black">
                 {{ auth()->user()->name }}
             </div>
-            <div class="text-xs text-gray-500">
+            <div class="text-xs text-black">
                 {{ ucfirst(auth()->user()->status) }}
             </div>
         </div>
@@ -93,7 +94,7 @@
     <!-- Chat Area -->
     <main class="flex-1 flex flex-col bg-gray-900">
         @if($activeRoom)
-            {{-- <livewire:chat.room :room="$activeRoom" wire:key="room-{{ $activeRoom->id }}" /> --}}
+            <livewire:chat.room :room="$activeRoom" wire:key="room-{{ $activeRoom->id }}" />
         @else
             <div class="flex-1 flex items-center justify-center text-gray-500">
                 Selecione uma sala ou pessoa para começar.
