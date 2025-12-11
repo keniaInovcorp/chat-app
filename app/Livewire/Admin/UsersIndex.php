@@ -52,7 +52,7 @@ class UsersIndex extends Component
         if ($status !== Password::RESET_LINK_SENT) {
             $this->addError('email', __($status));
         } else {
-            session()->flash('status', __('User created and invitation email sent.'));
+            session()->flash('status', 'Utilizador criado e email de convite enviado com sucesso!');
         }
 
         $this->reset(['name', 'email', 'role']);

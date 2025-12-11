@@ -4,7 +4,13 @@
     <!-- New user form -->
     <form wire:submit.prevent="createUser" class="bg-white shadow rounded p-4 space-y-4">
         @if (session('status'))
-            <div class="mb-3 text-sm text-green-700 bg-green-100 border border-green-200 rounded px-3 py-2">
+            <div x-data="{ show: true }" 
+                 x-show="show" 
+                 x-init="setTimeout(() => show = false, 4000)"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="mb-3 text-sm text-green-700 bg-green-100 border border-green-200 rounded px-3 py-2">
                 {{ session('status') }}
             </div>
         @endif

@@ -45,8 +45,8 @@
                         type="text"
                         wire:model="newRoomName"
                         placeholder="Nova sala..."
-                        class="flex-1 px-2 py-1 text-xs bg-gray-900 border border-gray-700 rounded
-                               focus:border-indigo-500 focus:ring-indigo-500"
+                        class="flex-1 px-2 py-1 text-xs bg-white text-gray-900 border border-gray-300 rounded placeholder-gray-400
+                               focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                     >
                     <button
                         type="submit"
