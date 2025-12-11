@@ -114,6 +114,31 @@ class RoomsIndex extends Component
     }
 
     /**
+     * Delete a public room.
+     *
+     * Only allows deleting public rooms (not private DMs).
+     * Displays success or error message accordingly.
+     *
+     * @param int $roomId ID of the room to delete.
+     * @return void
+     */
+    public function deleteRoom(int $roomId): void
+    {
+        $room = ChatRoom::findOrFail($roomId);
+
+        // Prevent deleting private rooms (DMs)
+        if ($room->is_private) {
+            session()->flash('error', 'Não é possível apagar salas privadas (DMs).');
+            return;
+        }
+
+        $roomName = $room->name;
+        $room->delete();
+
+        session()->flash('status', "Sala '{$roomName}' apagada com sucesso!");
+    }
+
+    /**
      * Render the admin rooms management view.
      *
      * Returns the view with a paginated list of all rooms, including member count

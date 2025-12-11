@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -63,6 +64,29 @@ class UsersIndex extends Component
     }
 
     /**
+     * Delete a user from the system.
+     *
+     * Prevents the admin from deleting themselves.
+     * Displays success or error message accordingly.
+     *
+     * @param int $userId ID of the user to delete.
+     * @return void
+     */
+    public function deleteUser(int $userId): void
+    {
+        if ($userId === $this->userId()) {
+            session()->flash('error', 'Não pode apagar o seu próprio utilizador.');
+            return;
+        }
+
+        $user = User::findOrFail($userId);
+        $userName = $user->name;
+        $user->delete();
+
+        session()->flash('status', "Utilizador '{$userName}' apagado com sucesso!");
+    }
+
+    /**
      * Render the admin users management view with a paginated list of all users.
      *
      * @return View
@@ -75,5 +99,28 @@ class UsersIndex extends Component
         return view('livewire.admin.users-index', [
             'users' => $users,
         ]);
+    }
+
+    /**
+     * Get the authenticated user instance.
+     *
+     * @return User
+     */
+    protected function user(): User
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user;
+    }
+
+    /**
+     * Get the authenticated user ID.
+     *
+     * @return int
+     */
+    protected function userId(): int
+    {
+        return $this->user()->id;
     }
 }

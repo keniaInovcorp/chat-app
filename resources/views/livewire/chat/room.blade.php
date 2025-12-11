@@ -6,7 +6,7 @@
         </h2>
 
         <!-- Room Members Avatars -->
-        <div class="flex items-center gap-1 overflow-x-auto max-w-[200px] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
+        <div class="flex items-center gap-1 overflow-x-auto max-w-[200px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             @foreach($members as $member)
                 <div class="flex-shrink-0" title="{{ $member->name }}">
                     @if($member->avatar_url)

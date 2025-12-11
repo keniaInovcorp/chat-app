@@ -64,7 +64,7 @@
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-black mb-2">
                     Pessoas
                 </h3>
-                
+
                 <!-- Search Input -->
                 <input
                     type="text"
@@ -73,7 +73,7 @@
                     class="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg mb-3
                            focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-black placeholder-gray-400"
                 >
-                
+
                 <!-- Users Grid (3x2) -->
                 <div class="grid grid-cols-3 gap-3">
                     @foreach($users as $user)
@@ -90,7 +90,7 @@
                                         {{ $user->initials }}
                                     </div>
                                 @endif
-                                
+
                                 <!-- Status indicator -->
                                 <span class="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-gray-100
                                     {{ $user->status === 'online' ? 'bg-green-500' : 'bg-gray-400' }}">

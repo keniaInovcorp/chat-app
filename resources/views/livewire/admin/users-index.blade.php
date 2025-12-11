@@ -51,26 +51,36 @@
         <table class="w-full text-sm">
             <thead class="text-left text-gray-500">
                 <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Permissão</th>
-                    <th>Status</th>
+                    <th class="pr-8">Nome</th>
+                    <th class="pr-12">Email</th>
+                    <th class="pr-8">Permissão</th>
+                    <th class="pr-8">Status</th>
+                    <th class="text-center">Ação</th>
                 </tr>
             </thead>
             <tbody class="divide-y">
                 @foreach($users as $user)
                     <tr>
-                        <td class="py-2">{{ $user->name }}</td>
-                        <td class="py-2">{{ $user->email }}</td>
-                        <td class="py-2">{{ $user->role }}</td>
-                        <td class="py-2">{{ $user->status }}</td>
+                        <td class="py-2 pr-8">{{ $user->name }}</td>
+                        <td class="py-2 pr-12">{{ $user->email }}</td>
+                        <td class="py-2 pr-8">{{ $user->role }}</td>
+                        <td class="py-2 pr-8">{{ $user->status }}</td>
+                        <td class="py-2 text-center">
+                            @if($user->id !== auth()->id())
+                                <button wire:click="deleteUser({{ $user->id }})"
+                                        wire:confirm="Tem certeza que deseja apagar o utilizador '{{ $user->name }}'?"
+                                        class="text-xs text-red-600 hover:underline">
+                                    Apagar
+                                </button>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
         <div class="mt-4">
-            {{ $users->links('vendor.pagination.tailwind') }}
+             {{ $users->links('vendor.pagination.tailwind') }}
         </div>
     </div>
 </div>

@@ -97,23 +97,28 @@
         <table class="w-full text-sm">
             <thead class="text-left text-gray-500">
                 <tr>
-                    <th>Nome</th>
-                    <th>Tipo</th>
-                    <th>Utilizadores</th>
-                    <th></th>
+                    <th class="pr-8">Nome</th>
+                    <th class="pr-12">Tipo</th>
+                    <th class="pr-8">Utilizadores</th>
+                    <th class="text-center">Ação</th>
                 </tr>
             </thead>
             <tbody class="divide-y">
                 @foreach($rooms as $room)
                     <tr>
-                        <td class="py-2">{{ $room->name ?? 'DM' }}</td>
-                        <td class="py-2">{{ $room->is_private ? 'Privada' : 'Pública' }}</td>
-                        <td class="py-2">{{ $room->users_count }}</td>
-                        <td class="py-2 text-right">
+                        <td class="py-2 pr-8">{{ $room->name ?? 'DM' }}</td>
+                        <td class="py-2 pr-12">{{ $room->is_private ? 'Privada' : 'Pública' }}</td>
+                        <td class="py-2 pr-8">{{ $room->users_count }}</td>
+                        <td class="py-2 text-center space-x-2">
                             @if(!$room->is_private)
                                 <button wire:click="editRoom({{ $room->id }})"
                                         class="text-xs text-indigo-600 hover:underline">
                                     Editar membros
+                                </button>
+                                <button wire:click="deleteRoom({{ $room->id }})"
+                                        wire:confirm="Tem certeza que deseja apagar a sala '{{ $room->name }}'?"
+                                        class="text-xs text-red-600 hover:underline">
+                                    Apagar
                                 </button>
                             @else
                                 <span class="text-xs text-gray-400">

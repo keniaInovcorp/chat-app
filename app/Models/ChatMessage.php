@@ -11,12 +11,13 @@ class ChatMessage extends Model
 
     /**
      * Get the user who sent this message.
+     * Includes soft deleted users to preserve message history.
      *
      * @return BelongsTo
      */
     public function sender()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
     /**
