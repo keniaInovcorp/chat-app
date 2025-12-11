@@ -5,8 +5,9 @@
             <div class="flex">
                 <!-- Logo single link to root/chat-->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('chat.index') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('chat.index') }}" class="flex flex-col items-center gap-0.5 px-1 pt-1 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition duration-150 ease-in-out">
+                        <x-application-logo class="block h-6 w-auto" />
+                        <span class="text-[10px] font-bold text-gray-500 tracking-wide uppercase">Chat App</span>
                     </a>
                 </div>
 
@@ -14,10 +15,10 @@
                 @if (Auth::user()->isAdmin())
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
-                            {{ __('Users') }}
+                            Utilizadores
                         </x-nav-link>
                         <x-nav-link :href="route('admin.rooms')" :active="request()->routeIs('admin.rooms')">
-                            {{ __('Rooms') }}
+                            Salas
                         </x-nav-link>
                     </div>
                 @endif

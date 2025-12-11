@@ -51,7 +51,40 @@
                         </span>
                     </div>
                     <div class="mt-1 inline-block max-w-xl rounded-lg bg-white px-4 py-2 text-sm text-gray-900 shadow-sm border border-gray-200">
-                        {{ $message->body }}
+                        @if($message->body)
+                            <p>{{ $message->body }}</p>
+                        @endif
+
+                        @if($message->attachment)
+                            @php
+                                $extension = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION));
+                                $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                            @endphp
+
+                            @if($isImage)
+                                <!-- Image preview -->
+                                <div class="mt-2">
+                                    <a href="{{ asset('storage/' . $message->attachment) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $message->attachment) }}"
+                                             alt="Attachment"
+                                             class="max-w-full rounded-lg border border-gray-300 hover:opacity-90 transition"
+                                             style="max-height: 300px;">
+                                    </a>
+                                </div>
+                            @else
+                                <!-- Link to download PDF -->
+                                <div class="mt-2 flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-300">
+                                    <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                    </svg>
+                                    <a href="{{ asset('storage/' . $message->attachment) }}"
+                                       target="_blank"
+                                       class="text-blue-600 hover:underline text-sm font-medium">
+                                         {{ basename($message->attachment) }}
+                                    </a>
+                                </div>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
