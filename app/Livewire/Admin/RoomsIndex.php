@@ -8,6 +8,7 @@ use App\Services\ChatService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 /**
  * Admin component for managing chat rooms and their members.
@@ -17,9 +18,11 @@ use Livewire\Component;
  */
 class RoomsIndex extends Component
 {
-    public string $name = '';
+    use WithPagination;
 
-    public bool $is_private = false;
+    protected $paginationTheme = 'tailwind';
+
+    public string $name = '';
 
     public array $selectedUsers = [];
 
@@ -44,10 +47,10 @@ class RoomsIndex extends Component
             name: $this->name,
             creator: $this->user(),
             userIds: $this->selectedUsers,
-            isPrivate: $this->is_private,
+            isPrivate: false,
         );
 
-        $this->reset(['name', 'is_private', 'selectedUsers']);
+        $this->reset(['name', 'selectedUsers']);
         $this->editingRoomId = $room->id;
     }
 
@@ -55,19 +58,22 @@ class RoomsIndex extends Component
      * Load a room for editing its members.
      *
      * Populates the form with the room's current name, privacy setting,
-     * and member list.
+     * and member list. Only allows editing public rooms, not private DMs.
      *
      * @param int $roomId ID of the room to edit.
      * @return void
      */
     public function editRoom(int $roomId): void
     {
-        $this->editingRoomId = $roomId;
-
         $room = ChatRoom::with('users')->findOrFail($roomId);
 
+        if ($room->is_private) {
+            session()->flash('error', 'Não é possível editar membros de salas privadas (DMs).');
+            return;
+        }
+
+        $this->editingRoomId = $roomId;
         $this->name = $room->name ?? '';
-        $this->is_private = $room->is_private;
         $this->selectedUsers = $room->users->pluck('id')->toArray();
     }
 
@@ -92,7 +98,7 @@ class RoomsIndex extends Component
 
         session()->flash('status', 'Membros atualizados com sucesso!');
 
-        $this->reset(['editingRoomId', 'name', 'is_private', 'selectedUsers']);
+        $this->reset(['editingRoomId', 'name', 'selectedUsers']);
     }
 
     /**
@@ -104,21 +110,24 @@ class RoomsIndex extends Component
      */
     public function cancelEdit(): void
     {
-        $this->reset(['editingRoomId', 'name', 'is_private', 'selectedUsers']);
+        $this->reset(['editingRoomId', 'name', 'selectedUsers']);
     }
 
     /**
      * Render the admin rooms management view.
      *
-     * Returns the view with a list of all rooms (including member count)
+     * Returns the view with a paginated list of all rooms, including member count
      * and all available users.
      *
      * @return View
      */
     public function render(): View
     {
+        $rooms = ChatRoom::withCount('users')->orderBy('name')->paginate(10);
+        $rooms->setPath(route('admin.rooms'));
+
         return view('livewire.admin.rooms-index', [
-            'rooms' => ChatRoom::withCount('users')->orderBy('name')->get(),
+            'rooms' => $rooms,
             'users' => User::orderBy('name')->get(),
         ]);
     }

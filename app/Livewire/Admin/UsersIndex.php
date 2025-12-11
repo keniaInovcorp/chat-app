@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 /**
  * Admin component for managing users.
@@ -17,6 +18,9 @@ use Livewire\Component;
  */
 class UsersIndex extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'tailwind';
 
     public string $name = '';
     public string $email = '';
@@ -59,14 +63,17 @@ class UsersIndex extends Component
     }
 
     /**
-     * Render the admin users management view with the list of all users.
+     * Render the admin users management view with a paginated list of all users.
      *
      * @return View
      */
     public function render(): View
     {
+        $users = User::orderBy('name')->paginate(10);
+        $users->setPath(route('admin.users'));
+
         return view('livewire.admin.users-index', [
-            'users' => User::orderBy('name')->get(),
+            'users' => $users,
         ]);
     }
 }

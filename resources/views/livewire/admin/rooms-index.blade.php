@@ -2,8 +2,26 @@
     <h1 class="text-2xl font-bold mb-4">Admin · Salas</h1>
 
     @if (session()->has('status'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+        <div x-data="{ show: true }"
+             x-show="show"
+             x-init="setTimeout(() => show = false, 4000)"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
             {{ session('status') }}
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div x-data="{ show: true }"
+             x-show="show"
+             x-init="setTimeout(() => show = false, 4000)"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {{ session('error') }}
         </div>
     @endif
 
@@ -51,14 +69,6 @@
                 @error('name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
 
-            <div class="flex items-center space-x-2">
-                <input id="is-private" type="checkbox" wire:model="is_private"
-                       class="border-gray-300 rounded">
-                <label for="is-private" class="text-sm text-gray-700">
-                    Sala privada (DM manual)
-                </label>
-            </div>
-
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Utilizadores na sala</label>
                 <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto border rounded p-2">
@@ -100,15 +110,25 @@
                         <td class="py-2">{{ $room->is_private ? 'Privada' : 'Pública' }}</td>
                         <td class="py-2">{{ $room->users_count }}</td>
                         <td class="py-2 text-right">
-                            <button wire:click="editRoom({{ $room->id }})"
-                                    class="text-xs text-indigo-600 hover:underline">
-                                Editar membros
-                            </button>
+                            @if(!$room->is_private)
+                                <button wire:click="editRoom({{ $room->id }})"
+                                        class="text-xs text-indigo-600 hover:underline">
+                                    Editar membros
+                                </button>
+                            @else
+                                <span class="text-xs text-gray-400">
+                                    DM privado
+                                </span>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+
+        <div class="mt-4">
+            {{ $rooms->links('vendor.pagination.tailwind') }}
+        </div>
 
     </div>
 </div>

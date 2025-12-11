@@ -4,8 +4,8 @@
     <!-- New user form -->
     <form wire:submit.prevent="createUser" class="bg-white shadow rounded p-4 space-y-4">
         @if (session('status'))
-            <div x-data="{ show: true }" 
-                 x-show="show" 
+            <div x-data="{ show: true }"
+                 x-show="show"
                  x-init="setTimeout(() => show = false, 4000)"
                  x-transition:leave="transition ease-in duration-300"
                  x-transition:leave-start="opacity-100"
@@ -68,7 +68,9 @@
                 @endforeach
             </tbody>
         </table>
+
+        <div class="mt-4">
+            {{ $users->links('vendor.pagination.tailwind') }}
+        </div>
     </div>
 </div>
-
-
