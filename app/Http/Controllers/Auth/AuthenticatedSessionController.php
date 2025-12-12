@@ -28,6 +28,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Update user status to online
+        $user = $request->user();
+        $user->update(['status' => 'online']);
+
         // After logging in, always redirect to the main chat page.
         return redirect()->intended(route('chat.index', absolute: false));
     }
@@ -37,7 +41,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = $request->user();
+
         Auth::guard('web')->logout();
+
+        // Update user status to offline after logout
+        if ($user) {
+            $user->update(['status' => 'offline']);
+        }
 
         $request->session()->invalidate();
 

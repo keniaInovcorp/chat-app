@@ -1,4 +1,4 @@
-<div class="flex flex-col bg-white rounded-lg shadow-lg max-h-[75vh] h-[75vh] overflow-hidden border border-gray-200">
+<div class="flex flex-col bg-white rounded-lg shadow-lg max-h-[75vh] h-[75vh] overflow-hidden border border-gray-200" wire:poll.2s="$refresh">
     <!-- Header -->
     <div class="flex-shrink-0 h-16 border-b border-gray-200 flex items-center justify-between px-6 bg-white">
         <h2 class="text-lg font-bold text-gray-900">
@@ -24,9 +24,35 @@
 
     <!-- Messages List, takes available space inside the card, scrolls internally -->
     <div
-        x-data="{ scroll() { $el.scrollTop = $el.scrollHeight } }"
-        x-init="scroll()"
-        @message-sent.window="setTimeout(() => scroll(), 50)"
+        x-data="{
+            scrollToBottom() {
+                setTimeout(() => {
+                    $el.scrollTop = $el.scrollHeight;
+                }, 300);
+            }
+        }"
+        x-init="
+            scrollToBottom();
+            // MutationObserver to detect when new messages are added
+            const observer = new MutationObserver((mutations) => {
+                let shouldScroll = false;
+                mutations.forEach((mutation) => {
+                    if (mutation.addedNodes.length > 0) {
+                        shouldScroll = true;
+                    }
+                });
+                if (shouldScroll) {
+                    setTimeout(() => {
+                        $el.scrollTop = $el.scrollHeight;
+                    }, 300);
+                }
+            });
+            observer.observe($el, {
+                childList: true,
+                subtree: true
+            });
+        "
+        @message-sent.window="scrollToBottom()"
         class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
     >
         @foreach($messages as $message)
