@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ChatMessage;
 use App\Models\ChatRoom;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Str;
 
@@ -53,6 +54,7 @@ class ChatService
 
     /**
      * Send a message to a room where the user is a member.
+     * Creates notifications for all room members except the sender.
      */
     public function sendMessage(ChatRoom $room, User $sender, string $message, ?string $attachment = null): ChatMessage
     {
@@ -60,12 +62,25 @@ class ChatService
             abort(403);
         }
 
-        return ChatMessage::create([
+        $chatMessage = ChatMessage::create([
             'chat_room_id' => $room->id,
             'user_id'      => $sender->id,
             'body'         => $message,
             'attachment'   => $attachment,
         ]);
+
+        // Create notifications for all room members except the sender
+        $roomMembers = $room->users()->where('users.id', '!=', $sender->id)->pluck('users.id');
+        
+        foreach ($roomMembers as $memberId) {
+            Notification::create([
+                'user_id' => $memberId,
+                'chat_room_id' => $room->id,
+                'chat_message_id' => $chatMessage->id,
+            ]);
+        }
+
+        return $chatMessage;
     }
 
     /**

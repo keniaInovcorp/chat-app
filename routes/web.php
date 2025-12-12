@@ -27,6 +27,6 @@ Route::prefix('admin')
     ->group(function () {
         Route::get('/users', UsersIndex::class)->name('admin.users');
         Route::get('/rooms', RoomsIndex::class)->name('admin.rooms');
-    });
+});
 
 require __DIR__ . '/auth.php';

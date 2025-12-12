@@ -3,6 +3,7 @@
 namespace App\Livewire\Chat;
 
 use App\Models\ChatRoom;
+use App\Models\Notification;
 use App\Models\User;
 use App\Services\ChatService;
 use Illuminate\Support\Facades\Auth;
@@ -16,15 +17,32 @@ class Index extends Component
     public string $userSearch = '';
 
     /**
+     * Listen for events from other components.
+     *
+     * @var array<int, string>
+     */
+    protected $listeners = [
+        'select-room' => 'selectRoom',
+    ];
+
+    /**
      * Initialize the component, setting the first user chat room as active if any.
+     * If a room ID is provided in the request, select that room instead.
      */
     public function mount(): void
     {
-        $this->activeRoom = $this->user()->chatRooms()->first();
+        $roomId = request()->query('room');
+        
+        if ($roomId) {
+            $this->selectRoom((int) $roomId);
+        } else {
+            $this->activeRoom = $this->user()->chatRooms()->first();
+        }
     }
 
     /**
      * Select an existing room to become the active room.
+     * Marks all notifications for this room as read.
      *
      * @param  int  $roomId  Identifier of the room to activate.
      * @return void
@@ -36,6 +54,7 @@ class Index extends Component
             ->firstOrFail();
 
         $this->activeRoom = $room;
+        $this->markRoomNotificationsAsRead($roomId);
     }
 
     /**
@@ -57,10 +76,12 @@ class Index extends Component
 
         $this->newRoomName = '';
         $this->activeRoom = $room;
+        $this->markRoomNotificationsAsRead($room->id);
     }
 
     /**
      * Start or resume a direct message (DM) conversation with another user.
+     * Marks all notifications for this room as read.
      *
      * @param  int  $userId  ID of the user to start the DM with.
      * @return void
@@ -79,6 +100,7 @@ class Index extends Component
         }
 
         $this->activeRoom = $room;
+        $this->markRoomNotificationsAsRead($room->id);
     }
 
     /**
@@ -123,5 +145,19 @@ class Index extends Component
     protected function userId(): int
     {
         return (int) Auth::id();
+    }
+
+    /**
+     * Mark all unread notifications for a specific room as read.
+     *
+     * @param  int  $roomId  ID of the room.
+     * @return void
+     */
+    protected function markRoomNotificationsAsRead(int $roomId): void
+    {
+        Notification::where('user_id', $this->userId())
+            ->where('chat_room_id', $roomId)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
     }
 }
